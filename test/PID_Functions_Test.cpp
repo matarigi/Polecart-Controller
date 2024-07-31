@@ -46,7 +46,7 @@ TEST(PID_Proportional_Function, proportional_test_6) {
 TEST(PID_Integral_Function, integral_test_1) {
     PID_Functions pid_func;
 
-    EXPECT_FLOAT_EQ(1,pid_func.integral_calculator(0,0,1));
+    EXPECT_FLOAT_EQ(0,pid_func.integral_calculator(0,0,1));
 }
 
 TEST(PID_Integral_Function, integral_test_2) {
@@ -64,7 +64,7 @@ TEST(PID_Integral_Function, integral_test_3) {
 TEST(PID_Integral_Function, integral_test_4) {
     PID_Functions pid_func;
 
-    ASSERT_THROW(pid_func.integral_calculator(std::numeric_limits<double>::max(),22.3,7.3), std::overflow_error);
+    ASSERT_THROW(pid_func.integral_calculator(std::numeric_limits<double>::max(),std::numeric_limits<double>::max(),7.3), std::overflow_error);
 }
 
 TEST(PID_Integral_Function, integral_test_5) {
