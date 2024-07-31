@@ -10,7 +10,9 @@ include_directories(include/${PROJECT_NAME})
 
 # You can use the file you are using but this is mostly used for multiple header
 set(HEADER_FILES include/${PROJECT_NAME}/PID_Functions.hpp)
-add_library(my_lib src/PID_Functions.cpp ${HEADER_FILES})
+add_library(pid_function_library src/PID_Functions.cpp ${HEADER_FILES})
+
+add_library(pid_controller_library src/PID_Controller.cpp include/${PROJECT_NAME}/PID_Controller.hpp)
 
 # find dependencies
 find_package(ament_cmake REQUIRED)
@@ -19,11 +21,11 @@ find_package(sensor_msgs REQUIRED)
 # uncomment the following section in order to fill in
 # further dependencies manually.
 # find_package(<dependency> REQUIRED)
-add_executable(listener src/Polecart_Controller.cpp)
-ament_target_dependencies(listener rclcpp sensor_msgs)
+add_executable(polecart_controller src/Polecart_Controller.cpp)
+ament_target_dependencies(polecart_controller rclcpp sensor_msgs)
 
 install(TARGETS
-  listener
+  polecart_controller
   DESTINATION lib/${PROJECT_NAME})
 
 
@@ -41,10 +43,12 @@ if(BUILD_TESTING)
   find_package(ament_cmake_gtest REQUIRED)
   set(TESTFILES
     test/main.cpp
-    test/PID_Functions_Test.cpp)
+    test/PID_Functions_Test.cpp
+    test/PID_Controller_Test.cpp)
 
     ament_add_gtest(${PROJECT_NAME}_test ${TESTFILES})
-    target_link_libraries(${PROJECT_NAME}_test my_lib)
+    target_link_libraries(${PROJECT_NAME}_test pid_function_library)
+    target_link_libraries(${PROJECT_NAME}_test pid_controller_library)
 
     install(TARGETS
       ${PROJECT_NAME}_test
