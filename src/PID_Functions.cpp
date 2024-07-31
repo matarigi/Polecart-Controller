@@ -4,7 +4,7 @@
 
 double PID_Functions::proportional_calculator(double set_point, double measured_value) 
 {
-    double result = set_point - measured_value;
+    double result = (double) set_point - (double) measured_value;
 
     return check_overflow(result);
 }
@@ -15,14 +15,14 @@ double PID_Functions::derivate_calculator(double error, double prev_error, doubl
         throw std::overflow_error("Overflow error\n");
     }
 
-    double result = (error - prev_error) / delta_time;
+    double result = ((double) error - (double) prev_error) / (double) delta_time;
 
     return check_overflow(result);
 }
 
 double PID_Functions::integral_calculator(double prev_integral, double error, double delta_time) {
 
-    double result = prev_integral + (error * delta_time);
+    double result = (double) prev_integral + ((double) error * (double) delta_time);
 
     return check_overflow(result);
 }
