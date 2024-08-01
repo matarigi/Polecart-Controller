@@ -1,5 +1,6 @@
 #include "IPolecart_Controller.hpp"
 #include "rclcpp/rclcpp.hpp"
+#include "PID_Controller.hpp"
 #include <sensor_msgs/msg/joint_state.hpp>
 #include <geometry_msgs/msg/wrench.hpp>
 using std::placeholders::_1;
@@ -21,6 +22,14 @@ class Polecart_Controller : public rclcpp::Node, IPolecart_Controller
     void init(std::string input_topic, std::string output_topic) {
       this->input_topic_ = input_topic;
       this->output_topic_ = output_topic;
+
+      this -> k_pid.k_derivate = 20;
+      this -> k_pid.k_integral = 15;
+      this -> k_pid.k_proportional = 35;
+
+      controller.init(this -> k_pid);
+
+      controller.set_set_point(0.0);
     }
 
     // Initialize the subscriber and publisher
@@ -39,11 +48,16 @@ class Polecart_Controller : public rclcpp::Node, IPolecart_Controller
     rclcpp::Subscription<sensor_msgs::msg::JointState>::SharedPtr subscriber_;
     rclcpp::Publisher<geometry_msgs::msg::Wrench>::SharedPtr publisher_;
 
+    // PID Controller and its constants
+    PID_Controller controller;
+    PID_Constants k_pid;
+
     // Subscriber callback
-    void read_angle_message(const sensor_msgs::msg::JointState msg) const
+    void read_angle_message(const sensor_msgs::msg::JointState msg)
     {
-      RCLCPP_INFO_STREAM(this->get_logger(), "I heard: '" << msg.position[0] << "'");
-      this -> publish_force_message(msg.position[0]);
+      double force = this -> controller.output_pid_calculation(msg.position[0], 0.05);
+      RCLCPP_INFO_STREAM(this->get_logger(), "I heard: '" << msg.position[0] << "' And try: '" << force << "'");
+      this -> publish_force_message(force);
     }
 
     // Publisher function

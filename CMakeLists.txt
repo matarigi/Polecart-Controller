@@ -14,6 +14,8 @@ add_library(pid_function_library src/PID_Functions.cpp ${HEADER_FILES})
 
 add_library(pid_controller_library src/PID_Controller.cpp include/${PROJECT_NAME}/PID_Controller.hpp)
 
+target_link_libraries(pid_controller_library pid_function_library)
+
 # find dependencies
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
@@ -23,6 +25,8 @@ find_package(sensor_msgs REQUIRED)
 # find_package(<dependency> REQUIRED)
 add_executable(polecart_controller src/Polecart_Controller.cpp)
 ament_target_dependencies(polecart_controller rclcpp sensor_msgs)
+
+target_link_libraries(polecart_controller pid_controller_library)
 
 install(TARGETS
   polecart_controller
