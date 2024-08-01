@@ -9,8 +9,8 @@ double PID_Functions::proportional_calculator(double set_point, double measured_
     return check_overflow(result);
 }
 
-double PID_Functions::derivate_calculator(double error, double prev_error, double delta_time) {
-
+double PID_Functions::derivate_calculator(double error, double prev_error, double delta_time) 
+{
     if (delta_time == 0) {
         throw std::overflow_error("Overflow error\n");
     }
@@ -20,7 +20,8 @@ double PID_Functions::derivate_calculator(double error, double prev_error, doubl
     return check_overflow(result);
 }
 
-double PID_Functions::integral_calculator(double prev_integral, double error, double delta_time) {
+double PID_Functions::integral_calculator(double prev_integral, double error, double delta_time) 
+{
 
     double result = (double) prev_integral + ((double) error * (double) delta_time);
 
@@ -30,7 +31,8 @@ double PID_Functions::integral_calculator(double prev_integral, double error, do
 /**
  * This method return the input if there is no overflow, otherwise throw std::overflow
  */
-double PID_Functions::check_overflow(double result) {
+double PID_Functions::check_overflow(double result) 
+{
     if (std::isinf(result)) {
         throw std::overflow_error("Overflow error\n");
     } else {

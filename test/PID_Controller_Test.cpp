@@ -1,7 +1,8 @@
 #include "PID_Controller.hpp"
 #include "gtest/gtest.h"
 
-TEST(PID_controller_output_test, null_set_point_test) {
+TEST(PID_controller_output_test, null_set_point_test) 
+{
     PID_Controller controller;
     PID_Constants k;
 
@@ -14,14 +15,16 @@ TEST(PID_controller_output_test, null_set_point_test) {
     ASSERT_THROW(controller.output_pid_calculation(0, 1), std::bad_optional_access);
 }
 
-TEST(PID_controller_output_test, null_constants_test) {
+TEST(PID_controller_output_test, null_constants_test) 
+{
     PID_Controller controller;
     controller.set_set_point(0);
 
     ASSERT_THROW(controller.output_pid_calculation(0, 1), std::bad_optional_access);
 }
 
-TEST(PID_controller_output_test, divide_by_zero_test) {
+TEST(PID_controller_output_test, divide_by_zero_test) 
+{
     PID_Controller controller;
     PID_Constants k;
 
@@ -36,7 +39,8 @@ TEST(PID_controller_output_test, divide_by_zero_test) {
     ASSERT_THROW(controller.output_pid_calculation(0, 0), std::overflow_error);
 }
 
-TEST(PID_controller_output_test, overflow_test) {
+TEST(PID_controller_output_test, overflow_test) 
+{
     PID_Controller controller;
     PID_Constants k;
 
@@ -51,7 +55,8 @@ TEST(PID_controller_output_test, overflow_test) {
     ASSERT_THROW(controller.output_pid_calculation(0, 1), std::overflow_error);
 }
 
-TEST(PID_weight_test, weight_test1) {
+TEST(PID_weight_test, weight_test1) 
+{
     PID_Controller controller;
     PID_Constants k;
 
@@ -64,7 +69,8 @@ TEST(PID_weight_test, weight_test1) {
     EXPECT_FLOAT_EQ(-33.673,controller.add_weight(12.1, 32.8, -45.01));
 }
 
-TEST(PID_weight_test, weight_test2) {
+TEST(PID_weight_test, weight_test2) 
+{
     PID_Controller controller;
     PID_Constants k;
 
@@ -77,7 +83,8 @@ TEST(PID_weight_test, weight_test2) {
     EXPECT_FLOAT_EQ(3538.59,controller.add_weight(12.1, 32.8, -45.01));
 }
 
-TEST(PID_controller_output_test, good_test_1) {
+TEST(PID_controller_output_test, good_test_1) 
+{
     PID_Controller controller;
     PID_Constants k;
 
@@ -92,7 +99,8 @@ TEST(PID_controller_output_test, good_test_1) {
     EXPECT_FLOAT_EQ((10.4196-18.354-(114.0/115.0)), controller.output_pid_calculation(5.21, 1.15));
 }
 
-TEST(PID_controller_output_test, good_test_2) {
+TEST(PID_controller_output_test, good_test_2) 
+{
     PID_Controller controller;
     PID_Constants k;
 

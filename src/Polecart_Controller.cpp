@@ -12,14 +12,16 @@ using std::placeholders::_1;
 class Polecart_Controller : public rclcpp::Node, IPolecart_Controller
 {
   public:
-    Polecart_Controller(std::string node_name, std::string input_topic, std::string output_topic)
+    Polecart_Controller(std::string node_name, std::string input_topic, std::string output_topic, double delta_time)
       : Node(node_name)
     {
+      this -> delta_time = delta_time;
       this->init(input_topic, output_topic);
       this->start();
     }
 
-    void init(std::string input_topic, std::string output_topic) {
+    void init(std::string input_topic, std::string output_topic) 
+    {
       this->input_topic_ = input_topic;
       this->output_topic_ = output_topic;
 
@@ -33,9 +35,10 @@ class Polecart_Controller : public rclcpp::Node, IPolecart_Controller
     }
 
     // Initialize the subscriber and publisher
-    void start() {
+    void start() 
+    {
       this->subscriber_ = this->create_subscription<sensor_msgs::msg::JointState>(
-        this->input_topic_ , 10, std::bind(&Polecart_Controller::read_angle_message, this, _1));
+        this->input_topic_ , 10, std::bind(&Polecart_Controller::subscriber_callback, this, _1));
       this->publisher_ = this->create_publisher<geometry_msgs::msg::Wrench>(this->output_topic_, 10);
     }
 
@@ -52,11 +55,11 @@ class Polecart_Controller : public rclcpp::Node, IPolecart_Controller
     PID_Controller controller;
     PID_Constants k_pid;
 
-    // Subscriber callback
-    void read_angle_message(const sensor_msgs::msg::JointState msg)
+    double delta_time;
+
+    void subscriber_callback(const sensor_msgs::msg::JointState msg)
     {
-      double force = this -> controller.output_pid_calculation(msg.position[0], 0.05);
-      RCLCPP_INFO_STREAM(this->get_logger(), "I heard: '" << msg.position[0] << "' And try: '" << force << "'");
+      double force = this -> controller.output_pid_calculation(msg.position[0], this -> delta_time);
       this -> publish_force_message(force);
     }
 
@@ -74,10 +77,11 @@ int main(int argc, char * argv[])
   const std::string input_topic = "/cart/pole_state";
   const std::string output_topic = "/cart/force";
   const std::string node_name = "Polecart_Controller";
+  const double delta_time = 0.05;
 
   rclcpp::init(argc, argv);
 
-  auto node = std::make_shared<Polecart_Controller>(node_name, input_topic, output_topic);
+  auto node = std::make_shared<Polecart_Controller>(node_name, input_topic, output_topic, delta_time);
 
   rclcpp::spin(node);
   rclcpp::shutdown();

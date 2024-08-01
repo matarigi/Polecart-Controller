@@ -4,7 +4,8 @@
 #include <optional>
 #include "PID_Functions.hpp"
 
-struct PID_Constants {
+struct PID_Constants 
+{
     double k_proportional;
     double k_derivate;
     double k_integral;
