@@ -17,5 +17,10 @@ Them, the controller package can be started via the following command:
 ```bash
 ros2 run polecart_controller polecart_controller
 ```
-It is important to start the controller first and then the simulator, so that it is controlled from the start.
+
+It is important to start the controller first and then the simulator, so that it is controlled from the start or reset the simulation with the following command:
+```bash
+ros2 service call /reset_simulation std_srvs/srv/Empty
+```
+
 
