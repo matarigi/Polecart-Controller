@@ -50,4 +50,10 @@ if(BUILD_TESTING)
       DESTINATION lib/${PROJECT_NAME})
 endif()
 
+
+install(DIRECTORY
+  launch
+  DESTINATION share/${PROJECT_NAME}/
+)
+
 ament_package()
