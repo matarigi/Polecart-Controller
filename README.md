@@ -8,19 +8,16 @@ https://github.com/cscribano/gazebo_polecart_ros
 
 ## Usage
 
-First build the package using:
+First follow the instruction in the repository of the simulator:
+
+https://github.com/cscribano/gazebo_polecart_ros
+
+Then, in the src file of colcon copy this repository, build the packages using:
 ```bash
 colcon build
 ```
 
-Them, the controller package can be started via the following command:
+To launch the simulator and the controller use:
 ```bash
-ros2 run polecart_controller polecart_controller
+ros2 launch polecart_controller polecart.launch.py
 ```
-
-It is important to start the controller first and then the simulator, so that it is controlled from the start or reset the simulation with the following command:
-```bash
-ros2 service call /reset_simulation std_srvs/srv/Empty
-```
-
-

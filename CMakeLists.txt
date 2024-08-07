@@ -18,9 +18,11 @@ target_link_libraries(pid_controller_library pid_function_library)
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(sensor_msgs REQUIRED)
+find_package(std_srvs REQUIRED)
 
 add_executable(polecart_controller src/Polecart_Controller.cpp)
 ament_target_dependencies(polecart_controller rclcpp sensor_msgs)
+ament_target_dependencies(polecart_controller rclcpp std_srvs)
 
 target_link_libraries(polecart_controller pid_controller_library)
 

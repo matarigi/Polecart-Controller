@@ -3,6 +3,7 @@
 #include "PID_Controller.hpp"
 #include <sensor_msgs/msg/joint_state.hpp>
 #include <geometry_msgs/msg/wrench.hpp>
+#include <std_srvs/srv/empty.hpp>
 using std::placeholders::_1;
 
 /**
@@ -72,6 +73,33 @@ class Polecart_Controller : public rclcpp::Node, IPolecart_Controller
     }
 };
 
+void reset(std::shared_ptr<Polecart_Controller> node)
+{
+  auto client = node->create_client<std_srvs::srv::Empty>("/reset_simulation");
+
+  // Wait for the server service
+  while (!client->wait_for_service(std::chrono::seconds(1))) {
+    if (!rclcpp::ok()) {
+      RCLCPP_ERROR(node->get_logger(), "Interrupted while waiting for the service. Exiting.");
+      exit(1);
+    }
+    RCLCPP_INFO(node->get_logger(), "service not available, waiting again...");
+  }
+
+  auto request = std::make_shared<std_srvs::srv::Empty::Request>();
+
+  auto result = client->async_send_request(request);
+
+  // Result of the request
+  if (rclcpp::spin_until_future_complete(node, result) ==
+    rclcpp::FutureReturnCode::SUCCESS)
+  {
+    RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "Executed reset_simulation service");
+  } else {
+    RCLCPP_ERROR(rclcpp::get_logger("rclcpp"), "Failed to call service reset_simulation");
+  }
+}
+
 int main(int argc, char * argv[])
 {
   const std::string input_topic = "/cart/pole_state";
@@ -82,6 +110,9 @@ int main(int argc, char * argv[])
   rclcpp::init(argc, argv);
 
   auto node = std::make_shared<Polecart_Controller>(node_name, input_topic, output_topic, delta_time);
+
+  // Reset the simulation
+  reset(node);
 
   rclcpp::spin(node);
   rclcpp::shutdown();
